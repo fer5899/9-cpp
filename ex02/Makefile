@@ -1,7 +1,7 @@
 ##########################################################################################################################
 
 # Target executable name
-NAME = RPN
+NAME = PmergeMe
 
 # Compiler and compilation flags
 CC = c++

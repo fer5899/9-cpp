@@ -4,7 +4,7 @@
 NAME = btc
 
 # Compiler and compilation flags
-CC = g++
+CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 # Directory structure
