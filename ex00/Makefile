@@ -9,7 +9,7 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 # Directory structure
 OBJ_DIR = obj/
-SRC = $(wildcard src/*.cpp)
+SRC = src/main.cpp src/BitcoinExchange.cpp
 OBJS = $(patsubst src/%, $(OBJ_DIR)%, $(SRC:.cpp=.o))
 
 ##########################################################################################################################
