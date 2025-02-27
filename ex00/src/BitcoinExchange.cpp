@@ -1,4 +1,4 @@
-#include"BitcoinExchange.hpp"
+#include "BitcoinExchange.hpp"
 
 BitcoinExchange::BitcoinExchange(std::string prices_filename, std::string rates_filename)
 {
@@ -6,10 +6,10 @@ BitcoinExchange::BitcoinExchange(std::string prices_filename, std::string rates_
 	{
 		std::ifstream prices_file(prices_filename.c_str());
 		std::ifstream rates_file(rates_filename.c_str());
-		if (prices_file == NULL || rates_file == NULL)
+		if (!prices_file.is_open() || !rates_file.is_open())
 			throw BitcoinExchange::InvalidFileException();
-		this->parsePrices(prices_filename);
-		this->outputRatedPrices(rates_filename);
+		this->parsePrices(prices_file);
+		this->outputRatedPrices(rates_file);
 	}
 	catch (std::exception &e)
 	{
@@ -35,9 +35,8 @@ BitcoinExchange::~BitcoinExchange(void)
 {
 }
 
-void	BitcoinExchange::parsePrices(std::string prices_filename)
+void	BitcoinExchange::parsePrices(std::ifstream &prices_file)
 {
-	std::ifstream prices_file(prices_filename.c_str());
 	std::string	line;
 	std::string date_word;
 	std::string price_word;
@@ -68,9 +67,8 @@ std::string	BitcoinExchange::parseDate(std::string date_word)
 	return year_word + month_word + day_word;
 }
 
-void	BitcoinExchange::outputRatedPrices(std::string rates_filename)
+void	BitcoinExchange::outputRatedPrices(std::ifstream &rates_file)
 {
-	std::ifstream rates_file(rates_filename.c_str());
 	std::string line;
 	std::string date_word;
 	std::string rate_word;
@@ -106,6 +104,12 @@ bool	BitcoinExchange::isBadFormat(std::string line)
 	if (date_word.empty() || rate_word.empty())
 	{
 		std::cout << "Error: bad input => " << line << std::endl;
+		return true;
+	}
+	rate_word = rate_word.substr(rate_word.find_first_not_of(" "), rate_word.find_last_not_of(" ") + 1);
+	if (rate_word.find_first_not_of("0123456789.") != std::string::npos)
+	{
+		std::cout << "Error: not a number." << std::endl;
 		return true;
 	}
 	if (std::atof(rate_word.c_str()) > 1000)

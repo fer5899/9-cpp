@@ -27,8 +27,8 @@ class BitcoinExchange
 		BitcoinExchange& operator=(const BitcoinExchange& other);
 		~BitcoinExchange(void);
 
-		void	parsePrices(std::string prices_filename);
-		void	outputRatedPrices(std::string rates_filename);
+		void	parsePrices(std::ifstream &prices_file);
+		void	outputRatedPrices(std::ifstream &rates_file);
 		float	findClosestPrice(std::string date);
 
 	class InvalidFileException : public std::exception
