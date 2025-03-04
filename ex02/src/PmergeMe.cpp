@@ -77,33 +77,33 @@ void	PmergeMe::fillList(std::string numbers)
 		throw PmergeMe::InvalidArgumentException();
 }
 
-std::vector<int>	mergeVector(std::vector<int>& left, std::vector<int>& right)
+std::vector<int>	mergeVector(std::vector<int>& b, std::vector<int>& a)
 {
 	std::vector<int> result;
 	int i = 0;
 	int j = 0;
 
-	while (i < static_cast<int>(left.size()) && j < static_cast<int>(right.size()))
+	while (i < static_cast<int>(b.size()) && j < static_cast<int>(a.size()))
 	{
-		if (left[i] < right[j])
+		if (b[i] < a[j])
 		{
-			result.push_back(left[i]);
+			result.push_back(b[i]);
 			i++;
 		}
 		else
 		{
-			result.push_back(right[j]);
+			result.push_back(a[j]);
 			j++;
 		}
 	}
-	while (i < static_cast<int>(left.size()))
+	while (i < static_cast<int>(b.size()))
 	{
-		result.push_back(left[i]);
+		result.push_back(b[i]);
 		i++;
 	}
-	while (j < static_cast<int>(right.size()))
+	while (j < static_cast<int>(a.size()))
 	{
-		result.push_back(right[j]);
+		result.push_back(a[j]);
 		j++;
 	}
 	return result;
@@ -114,77 +114,37 @@ std::vector<int>	MergeSortVector(std::vector<int> vector)
 	if (vector.size() <= 1)
 		return vector;
 
-	std::vector<int> left;
-	std::vector<int> right;
+	std::vector<int> b;
+	std::vector<int> a;
 	int middle = vector.size() / 2;
 
 	for (int i = 0; i < middle; i++)
-		left.push_back(vector[i]);
+		b.push_back(vector[i]);
 	for (int i = middle; i < static_cast<int>(vector.size()); i++)
-		right.push_back(vector[i]);
+		a.push_back(vector[i]);
 
-	left = MergeSortVector(left);
-	right = MergeSortVector(right);
+	b = MergeSortVector(b);
+	a = MergeSortVector(a);
 
-	return mergeVector(left, right);
+	return mergeVector(b, a);
 }
 
-std::list<int>	mergeList(std::list<int>& left, std::list<int>& right)
-{
-	std::list<int> result;
-	std::list<int>::iterator itLeft = left.begin();
-	std::list<int>::iterator itRight = right.begin();
 
-	while (itLeft != left.end() && itRight != right.end())
-	{
-		if (*itLeft < *itRight)
-		{
-			result.push_back(*itLeft);
-			itLeft++;
-		}
-		else
-		{
-			result.push_back(*itRight);
-			itRight++;
-		}
-	}
-	while (itLeft != left.end())
-	{
-		result.push_back(*itLeft);
-		itLeft++;
-	}
-	while (itRight != right.end())
-	{
-		result.push_back(*itRight);
-		itRight++;
-	}
-	return result;
-}
-
-std::list<int>	MergeSortList(std::list<int> list)
+std::list<int>	MergeInsertionSortList(std::list<int> list, size_t element_size)
 {
-	if (list.size() <= 1)
+	size_t number_of_pairs = list.size() / (element_size * 2);
+	if (number_of_pairs == 0)
 		return list;
 
-	std::list<int> left;
-	std::list<int> right;
-	int middle = list.size() / 2;
+	std::list<int>::iterator b = list.begin();
+	std::advance(b, element_size - 1);
+	std::list<int>::iterator a = b;
+	std::advance(a, element_size);
 
-	for (int i = 0; i < middle; i++)
-	{
-		left.push_back(list.front());
-		list.pop_front();
-	}
-	while (!list.empty())
-	{
-		right.push_back(list.front());
-		list.pop_front();
+	for (size_t pair_index = 0; pair_index < number_of_pairs; pair_index++) {
+		
 	}
 
-	left = MergeSortList(left);
-	right = MergeSortList(right);
-
-	return mergeList(left, right);
 }
 
 void	PmergeMe::fillAndSort(std::string numbers)
@@ -196,7 +156,7 @@ void	PmergeMe::fillAndSort(std::string numbers)
 
 	clock_t startList = clock();
 	this->fillList(numbers);
-	std::list<int> sortedList = MergeSortList(_list);
+	std::list<int> sortedList = MergeInsertionSortList(_list, 1);
 	clock_t endList = clock();
 
 	std::cout << "Before: ";
