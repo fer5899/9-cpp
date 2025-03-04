@@ -129,21 +129,73 @@ std::vector<int>	MergeSortVector(std::vector<int> vector)
 	return mergeVector(b, a);
 }
 
-
-std::list<int>	MergeInsertionSortList(std::list<int> list, size_t element_size)
-{
+void swapUnsortedPairsList(std::list<int> &list, size_t element_size) {
+	typedef typename std::list<int>::iterator Iterator;
 	size_t number_of_pairs = list.size() / (element_size * 2);
-	if (number_of_pairs == 0)
-		return list;
 
-	std::list<int>::iterator b = list.begin();
-	std::advance(b, element_size - 1);
-	std::list<int>::iterator a = b;
-	std::advance(a, element_size);
+	Iterator b = list.begin();
+	Iterator a = b;
+	
 
 	for (size_t pair_index = 0; pair_index < number_of_pairs; pair_index++) {
-		
+		std::advance(b, element_size - 1 + pair_index * element_size * 2);
+		std::advance(a, element_size * 2 - 1 + pair_index * element_size * 2);
+		if (*b < *a)
+			continue;
+		Iterator swap_b = b;
+		Iterator swap_a = a;
+		for (size_t swapped_elements = 0; swapped_elements < element_size; swapped_elements++)
+		{
+			std::swap(*swap_b, *swap_a);
+			swap_b--;
+			swap_a--;
+		}
 	}
+}
+
+long jacobsthalNumber(long n) { 
+	return round((pow(2, n + 1) + pow(-1, n)) / 3); 
+}
+
+void binaryInsertionSort(std::list<int> &main, size_t element_size) {
+	
+
+
+}
+
+void	recursiveMergeInsertionSortList(std::list<int> &list, size_t element_size)
+{
+	typedef typename std::list<int>::iterator Iterator;
+	size_t number_of_pairs = list.size() / (element_size * 2);
+
+	swapUnsortedPairsList(list, element_size);
+
+	if (number_of_pairs == 1)
+		return;
+
+	recursiveMergeInsertionSortList(list, element_size);
+
+	std::vector<Iterator> main;
+	std::vector<Iterator> pend;
+	size_t number_of_elements = main.size() / element_size;
+
+	// Initialize pend
+	// Iterator element_start = main.begin();
+	// Iterator element_end = element_start;
+	// std::advance(element_start, element_size * 2);
+	// std::advance(element_end, element_size * 2 + element_size);
+	
+	// for (size_t element_index = 2; element_index < number_of_elements; element_index++) {
+	// 	if (element_index % 2 == 0) { // Move all Bs from main to pend
+	// 		pend.splice(pend.end(), main, element_start, element_end);
+	// 	}
+	// 	std::advance(element_start, element_size);
+	// 	std::advance(element_end, element_size);
+	// }
+		
+	
+
+	return;
 
 }
 
@@ -156,7 +208,8 @@ void	PmergeMe::fillAndSort(std::string numbers)
 
 	clock_t startList = clock();
 	this->fillList(numbers);
-	std::list<int> sortedList = MergeInsertionSortList(_list, 1);
+	std::list<int> sortedList = this->_list;
+	recursiveMergeInsertionSortList(sortedList, 1);
 	clock_t endList = clock();
 
 	std::cout << "Before: ";
