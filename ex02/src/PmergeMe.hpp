@@ -10,6 +10,11 @@
 #include <climits>
 #include <ctime>
 #include <iterator>
+#include <climits>
+#include <cstdlib>
+#include <iomanip>
+#include <sstream>
+#include <set>
 
 
 class PmergeMe

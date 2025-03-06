@@ -381,8 +381,8 @@ void PmergeMe::fillAndSort(std::string numbers)
 	std::cout << std::endl;
 
 	double elapsed_time = static_cast<double>(endVector - startVector) / CLOCKS_PER_SEC * 1000.0;
-	std::cout << "Time to process a range of " << _vector.size() << " elements with std::vector : " << elapsed_time << " ms" << std::endl;
+	std::cout << "Time to process a range of " << _vector.size() << " elements with std::vector : " << std::fixed << std::setprecision(6) << elapsed_time << " ms" << std::endl;
 
 	elapsed_time = static_cast<double>(endList - startList) / CLOCKS_PER_SEC * 1000.0;
-	std::cout << "Time to process a range of " << _list.size() << " elements with std::list   : " << elapsed_time << " ms" << std::endl;
+	std::cout << "Time to process a range of " << _list.size() << " elements with std::list   : " << std::fixed << std::setprecision(6) << elapsed_time << " ms" << std::endl;
 }
