@@ -336,10 +336,32 @@ void recursiveMergeInsertionSort_List(std::list<int> &list, size_t element_size)
 	return;
 }
 
-
+void checkDuplicates(std::string numbers)
+{
+	std::set<int> set;
+	for (size_t i = 0; i < numbers.size(); i++)
+	{
+		if (numbers[i] == ' ')
+			continue;
+		else
+		{
+			long tmp = std::atol(numbers.c_str() + i);
+			if (tmp < 0 || tmp > INT_MAX)
+				throw PmergeMe::InvalidArgumentException();
+			if (!set.insert(static_cast<int>(tmp)).second)
+				throw PmergeMe::DuplicateElementException();
+			while (numbers[i] && numbers[i] != ' ')
+				i++;
+		}
+	}
+	if (set.empty() || set.size() < 2)
+		throw PmergeMe::InvalidArgumentException();
+}
 
 void PmergeMe::fillAndSort(std::string numbers)
 {
+	checkDuplicates(numbers);
+
 	clock_t startVector = clock();
 	this->fillVector(numbers);
 	std::vector<int> sortedVector = MergeSortVector(_vector);

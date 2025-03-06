@@ -42,6 +42,15 @@ class PmergeMe
 				return ("Error: invalid argument");
 			}
 	};
+
+	class DuplicateElementException : public std::exception
+	{
+		public:
+			virtual const char* what() const throw()
+			{
+				return ("Error: duplicate element found in input sequence");
+			}
+	};
 };
 
 
