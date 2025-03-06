@@ -5,12 +5,12 @@ PmergeMe::PmergeMe(std::string numbers)
 	this->checkNumbers(numbers);
 }
 
-PmergeMe::PmergeMe(const PmergeMe& other)
+PmergeMe::PmergeMe(const PmergeMe &other)
 {
 	*this = other;
 }
 
-PmergeMe& PmergeMe::operator=(const PmergeMe& other)
+PmergeMe &PmergeMe::operator=(const PmergeMe &other)
 {
 	if (this != &other)
 	{
@@ -25,7 +25,7 @@ PmergeMe::~PmergeMe(void)
 	return;
 }
 
-void	PmergeMe::checkNumbers(std::string numbers)
+void PmergeMe::checkNumbers(std::string numbers)
 {
 	for (int i = 0; numbers[i]; i++)
 	{
@@ -37,9 +37,31 @@ void	PmergeMe::checkNumbers(std::string numbers)
 	}
 }
 
-void	PmergeMe::fillVector(std::string numbers)
+void printList(std::list<int> list) {
+	int len = static_cast<int>(list.size());
+	// bool tooLong = false;
+	// if (len > 8)
+	// {
+	// 	tooLong = true;
+	// 	len = 7;
+	// }
+	std::list<int>::iterator it = list.begin();
+	for (int i = 0; i < len; i++, ++it)
+	{
+		std::cout << *it;
+		if (i != len - 1)
+			std::cout << " ";
+	}
+	// if (tooLong)
+	// 	std::cout << " [...]";
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+}
+
+void PmergeMe::fillVector(std::string numbers)
 {
-	for (int i = 0; i < static_cast<int>(numbers.size()) ; i++)
+	for (int i = 0; i < static_cast<int>(numbers.size()); i++)
 	{
 		if (numbers[i] == ' ')
 			continue;
@@ -57,9 +79,9 @@ void	PmergeMe::fillVector(std::string numbers)
 		throw PmergeMe::InvalidArgumentException();
 }
 
-void	PmergeMe::fillList(std::string numbers)
+void PmergeMe::fillList(std::string numbers)
 {
-	for (int i = 0; i < static_cast<int>(numbers.size()) ; i++)
+	for (int i = 0; i < static_cast<int>(numbers.size()); i++)
 	{
 		if (numbers[i] == ' ')
 			continue;
@@ -77,7 +99,7 @@ void	PmergeMe::fillList(std::string numbers)
 		throw PmergeMe::InvalidArgumentException();
 }
 
-std::vector<int>	mergeVector(std::vector<int>& b, std::vector<int>& a)
+std::vector<int> mergeVector(std::vector<int> &b, std::vector<int> &a)
 {
 	std::vector<int> result;
 	int i = 0;
@@ -109,7 +131,7 @@ std::vector<int>	mergeVector(std::vector<int>& b, std::vector<int>& a)
 	return result;
 }
 
-std::vector<int>	MergeSortVector(std::vector<int> vector)
+std::vector<int> MergeSortVector(std::vector<int> vector)
 {
 	if (vector.size() <= 1)
 		return vector;
@@ -129,17 +151,24 @@ std::vector<int>	MergeSortVector(std::vector<int> vector)
 	return mergeVector(b, a);
 }
 
-void swapUnsortedPairsList(std::list<int> &list, size_t element_size) {
+void advancePair_List(std::list<int>::iterator &a, std::list<int>::iterator &b, size_t element_size, size_t &pair_index) {
+	std::advance(a, element_size * 2);
+	std::advance(b, element_size * 2);
+	pair_index++;
+}
+
+void swapUnsortedPairs_List(std::list<int> &list, size_t element_size)
+{
 	typedef typename std::list<int>::iterator Iterator;
 	size_t number_of_pairs = list.size() / (element_size * 2);
 
 	Iterator b = list.begin();
+	std::advance(b, element_size - 1);
 	Iterator a = b;
-	
+	std::advance(a, element_size);
 
-	for (size_t pair_index = 0; pair_index < number_of_pairs; pair_index++) {
-		std::advance(b, element_size - 1 + pair_index * element_size * 2);
-		std::advance(a, element_size * 2 - 1 + pair_index * element_size * 2);
+	for (size_t pair_index = 0; pair_index < number_of_pairs; advancePair_List(a, b, element_size, pair_index))
+	{
 		if (*b < *a)
 			continue;
 		Iterator swap_b = b;
@@ -153,53 +182,163 @@ void swapUnsortedPairsList(std::list<int> &list, size_t element_size) {
 	}
 }
 
-long jacobsthalNumber(long n) { 
-	return round((pow(2, n + 1) + pow(-1, n)) / 3); 
+size_t jacobsthalNumber(size_t n)
+{
+	return round((pow(2, n + 1) + pow(-1, n)) / 3);
 }
 
-void binaryInsertionSort(std::list<int> &main, size_t element_size) {
-	
-
-
+void nextIdxInJacobsthalSequence(size_t &current_idx, size_t &current_jacobsthal_idx)
+{
+	current_idx--;
+	if (current_idx <= jacobsthalNumber(current_jacobsthal_idx - 1))
+	{
+		current_jacobsthal_idx++;
+		current_idx = jacobsthalNumber(current_jacobsthal_idx);
+	}
 }
 
-void	recursiveMergeInsertionSortList(std::list<int> &list, size_t element_size)
+size_t findBoundingJacobsthalIndex(size_t number_of_pairs)
+{
+	size_t idx = 1;
+	while (jacobsthalNumber(idx) <= number_of_pairs)
+		idx++;
+	return idx;
+}
+
+std::list<int>::iterator getElementIterator_List(std::list<int>::iterator first_element, size_t element_idx, size_t element_size)
+{
+	std::advance(first_element, element_size * element_idx);
+	return first_element;
+}
+
+struct CompareIterators_List
+{
+	bool operator()(const std::list<int>::iterator &left, const std::list<int>::iterator &right) const
+	{
+		return *left < *right;
+	}
+};
+
+// void printIteratorList(std::list<std::list<int>::iterator> list) {
+// 	std::list<std::list<int>::iterator>::iterator it = list.begin();
+// 	size_t len = list.size();
+// 	for (size_t i = 0; i < len; i++, ++it)
+// 	{
+// 		std::cout << **it;
+// 		if (i != len - 1)
+// 			std::cout << " ";
+// 	}
+// 	std::cout << std::endl;
+// 	std::cout << std::endl;
+// }
+
+void recursiveMergeInsertionSort_List(std::list<int> &list, size_t element_size)
 {
 	typedef typename std::list<int>::iterator Iterator;
 	size_t number_of_pairs = list.size() / (element_size * 2);
 
-	swapUnsortedPairsList(list, element_size);
+	swapUnsortedPairs_List(list, element_size);
 
-	if (number_of_pairs == 1)
+	if (number_of_pairs <= 1)
 		return;
 
-	recursiveMergeInsertionSortList(list, element_size);
-
-	std::vector<Iterator> main;
-	std::vector<Iterator> pend;
-	size_t number_of_elements = main.size() / element_size;
-
-	// Initialize pend
-	// Iterator element_start = main.begin();
-	// Iterator element_end = element_start;
-	// std::advance(element_start, element_size * 2);
-	// std::advance(element_end, element_size * 2 + element_size);
+	recursiveMergeInsertionSort_List(list, element_size * 2);
 	
-	// for (size_t element_index = 2; element_index < number_of_elements; element_index++) {
-	// 	if (element_index % 2 == 0) { // Move all Bs from main to pend
-	// 		pend.splice(pend.end(), main, element_start, element_end);
-	// 	}
-	// 	std::advance(element_start, element_size);
-	// 	std::advance(element_end, element_size);
-	// }
+	size_t number_of_elements = list.size() / element_size;
+
+	std::list<Iterator> main;
+	std::list<Iterator> a_elements;
+	std::list<Iterator> b_elements;
+	
+	
+	Iterator first_element = list.begin();
+	std::advance(first_element, element_size - 1);
+	
+	// Initialize main with A1, B1
+	main.push_back(getElementIterator_List(first_element, 0, element_size));
+	main.push_back(getElementIterator_List(first_element, 1, element_size));
+	
+	// Initialize a_elements with all As, and initialize b_elements with the all Bs
+	for (size_t element_idx = 0; element_idx < number_of_elements; element_idx++)
+	{
+		if (element_idx % 2 == 0)
+			b_elements.push_back(getElementIterator_List(first_element, element_idx, element_size));
+		else
+		{
+			a_elements.push_back(getElementIterator_List(first_element, element_idx, element_size));
+			if (element_idx != 1)
+				main.push_back(getElementIterator_List(first_element, element_idx, element_size));
+		}
+	}
+			
+	CompareIterators_List comp;
+
+	// Perform binary insertion in the order dictated by Jacobsthal numbers if it can be done
+	size_t bounding_jacobsthal_idx = findBoundingJacobsthalIndex(number_of_pairs);
+	size_t current_jacobsthal_idx = 1;
+	size_t inserted_elements = 1; // B1 counts as inserted
+	// idx starts from 1 to work with jacobsthals, but the indexes to work with the lists start from 0. An offset of -1 is needed.
+	for (size_t idx = 1; current_jacobsthal_idx < bounding_jacobsthal_idx; nextIdxInJacobsthalSequence(idx, current_jacobsthal_idx)) {
+		if (idx == 1)
+			continue;
+		// The current B element will always be smaller than its A element counterpart, therefore
+		// the bound is all the Bs inserted up to now plus all the As up to the index.
+		size_t boundElementIdx = (idx - 1) + inserted_elements; // -1 for the offset
+		std::list<Iterator>::iterator bound = main.begin();
+		std::advance(bound, boundElementIdx);
+		std::list<Iterator>::iterator to_insert = b_elements.begin();
+		std::advance(to_insert, idx - 1);
+
 		
+		std::list<Iterator>::iterator insert_before = std::upper_bound(main.begin(), bound, *to_insert, comp);
+		main.insert(insert_before, *to_insert);
+		inserted_elements++;
+	}
+
+	// Perform binary insertion in sequential order
+	while (inserted_elements < b_elements.size()) {
+		// The current B element will always be smaller than its A element counterpart, therefore
+		// the bound is all the Bs inserted up to now plus all the As up to the index.
+		size_t boundElementIdx = inserted_elements * 2;
+		std::list<Iterator>::iterator bound = main.begin();
+		std::advance(bound, boundElementIdx);
+		std::list<Iterator>::iterator to_insert = b_elements.begin();
+		std::advance(to_insert, inserted_elements);
+
+		std::list<Iterator>::iterator insert_before = std::upper_bound(main.begin(), bound, *to_insert, comp);
+		main.insert(insert_before, *to_insert);
+		inserted_elements++;
+	}
 	
+
+	// Copy all the elements to a copy list
+	std::list<int> copy_list;
+	for (std::list<Iterator>::iterator element = main.begin(); element != main.end(); element++)
+	{
+		for (size_t i = 0; i < element_size; i++)
+		{
+			Iterator element_start = *element;
+			std::advance(element_start, -element_size + i + 1);
+			copy_list.insert(copy_list.end(), *element_start);
+		}
+	}
+	
+	// Replace values in the original list. The leftover numbers remain unchanged.
+	Iterator list_it = list.begin();
+	Iterator copy_it = copy_list.begin();
+	while (copy_it != copy_list.end())
+	{
+		*list_it = *copy_it;
+		list_it++;
+		copy_it++;
+	}
 
 	return;
-
 }
 
-void	PmergeMe::fillAndSort(std::string numbers)
+
+
+void PmergeMe::fillAndSort(std::string numbers)
 {
 	clock_t startVector = clock();
 	this->fillVector(numbers);
@@ -209,18 +348,18 @@ void	PmergeMe::fillAndSort(std::string numbers)
 	clock_t startList = clock();
 	this->fillList(numbers);
 	std::list<int> sortedList = this->_list;
-	recursiveMergeInsertionSortList(sortedList, 1);
+	recursiveMergeInsertionSort_List(sortedList, 1);
 	clock_t endList = clock();
 
 	std::cout << "Before: ";
-	int len = static_cast<int>(_vector.size());
+	size_t len = _vector.size();
 	bool tooLong = false;
 	if (len > 8)
 	{
 		tooLong = true;
 		len = 7;
 	}
-	for (int i = 0; i < len; i++)
+	for (size_t i = 0; i < len; i++)
 	{
 		std::cout << _vector[i];
 		if (i != len - 1)
@@ -231,7 +370,7 @@ void	PmergeMe::fillAndSort(std::string numbers)
 	std::cout << std::endl;
 
 	std::cout << "After:  ";
-	for (int i = 0; i < len; i++)
+	for (size_t i = 0; i < len; i++)
 	{
 		std::cout << sortedVector[i];
 		if (i != len - 1)
