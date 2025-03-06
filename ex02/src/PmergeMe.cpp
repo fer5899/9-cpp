@@ -142,13 +142,13 @@ void PmergeMe::fillList(std::string numbers)
 }
 
 
-void advancePair_Vector(std::vector<int>::iterator &a, std::vector<int>::iterator &b, size_t element_size, size_t &pair_index) {
+static void advancePair_Vector(std::vector<int>::iterator &a, std::vector<int>::iterator &b, size_t element_size, size_t &pair_index) {
 	std::advance(a, element_size * 2);
 	std::advance(b, element_size * 2);
 	pair_index++;
 }
 
-void swapUnsortedPairs_Vector(std::vector<int> &vector, size_t element_size)
+static void swapUnsortedPairs_Vector(std::vector<int> &vector, size_t element_size)
 {
 	typedef typename std::vector<int>::iterator Iterator;
 	size_t number_of_pairs = vector.size() / (element_size * 2);
@@ -173,7 +173,7 @@ void swapUnsortedPairs_Vector(std::vector<int> &vector, size_t element_size)
 	}
 }
 
-std::vector<int>::iterator getElementIterator_Vector(std::vector<int>::iterator first_element, size_t element_idx, size_t element_size)
+static std::vector<int>::iterator getElementIterator_Vector(std::vector<int>::iterator first_element, size_t element_idx, size_t element_size)
 {
 	std::advance(first_element, element_size * element_idx);
 	return first_element;
@@ -186,7 +186,7 @@ struct CompareIterators_Vector {
 	}
 };
 
-void recursiveMergeInsertionSort_Vector(std::vector<int> &vector, size_t element_size)
+static void recursiveMergeInsertionSort_Vector(std::vector<int> &vector, size_t element_size)
 {
 	typedef typename std::vector<int>::iterator Iterator;
 	size_t number_of_pairs = vector.size() / (element_size * 2);
@@ -295,13 +295,13 @@ void recursiveMergeInsertionSort_Vector(std::vector<int> &vector, size_t element
 
 
 
-void advancePair_List(std::list<int>::iterator &a, std::list<int>::iterator &b, size_t element_size, size_t &pair_index) {
+static void advancePair_List(std::list<int>::iterator &a, std::list<int>::iterator &b, size_t element_size, size_t &pair_index) {
 	std::advance(a, element_size * 2);
 	std::advance(b, element_size * 2);
 	pair_index++;
 }
 
-void swapUnsortedPairs_List(std::list<int> &list, size_t element_size)
+static void swapUnsortedPairs_List(std::list<int> &list, size_t element_size)
 {
 	typedef typename std::list<int>::iterator Iterator;
 	size_t number_of_pairs = list.size() / (element_size * 2);
@@ -326,7 +326,7 @@ void swapUnsortedPairs_List(std::list<int> &list, size_t element_size)
 	}
 }
 
-std::list<int>::iterator getElementIterator_List(std::list<int>::iterator first_element, size_t element_idx, size_t element_size)
+static std::list<int>::iterator getElementIterator_List(std::list<int>::iterator first_element, size_t element_idx, size_t element_size)
 {
 	std::advance(first_element, element_size * element_idx);
 	return first_element;
@@ -339,7 +339,7 @@ struct CompareIterators_List {
 	}
 };
 
-void recursiveMergeInsertionSort_List(std::list<int> &list, size_t element_size)
+static void recursiveMergeInsertionSort_List(std::list<int> &list, size_t element_size)
 {
 	typedef typename std::list<int>::iterator Iterator;
 	size_t number_of_pairs = list.size() / (element_size * 2);
