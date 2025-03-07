@@ -21,30 +21,10 @@ static size_t findBoundingJacobsthalIndex(size_t number_of_pairs)
 	return idx;
 }
 
-static void checkDuplicates(std::string numbers) {
-	std::set<int> set;
-	for (size_t i = 0; i < numbers.size(); i++)
-	{
-		if (numbers[i] == ' ')
-			continue;
-		else
-		{
-			long tmp = std::atol(numbers.c_str() + i);
-			if (tmp < 0 || tmp > INT_MAX)
-				throw PmergeMe::InvalidArgumentException();
-			if (!set.insert(static_cast<int>(tmp)).second)
-				throw PmergeMe::DuplicateElementException();
-			while (numbers[i] && numbers[i] != ' ')
-				i++;
-		}
-	}
-	if (set.empty() || set.size() < 2)
-		throw PmergeMe::InvalidArgumentException();
-}
-
 PmergeMe::PmergeMe(std::string numbers)
 {
 	this->checkNumbers(numbers);
+	this->checkDuplicates(numbers);
 }
 
 PmergeMe::PmergeMe(const PmergeMe &other)
@@ -79,26 +59,25 @@ void PmergeMe::checkNumbers(std::string numbers)
 	}
 }
 
-void printList(std::list<int> list) {
-	int len = static_cast<int>(list.size());
-	// bool tooLong = false;
-	// if (len > 8)
-	// {
-	// 	tooLong = true;
-	// 	len = 7;
-	// }
-	std::list<int>::iterator it = list.begin();
-	for (int i = 0; i < len; i++, ++it)
+void PmergeMe::checkDuplicates(std::string numbers) {
+	std::set<int> set;
+	for (size_t i = 0; i < numbers.size(); i++)
 	{
-		std::cout << *it;
-		if (i != len - 1)
-			std::cout << " ";
+		if (numbers[i] == ' ')
+			continue;
+		else
+		{
+			long tmp = std::atol(numbers.c_str() + i);
+			if (tmp < 0 || tmp > INT_MAX)
+				throw PmergeMe::InvalidArgumentException();
+			if (!set.insert(static_cast<int>(tmp)).second)
+				throw PmergeMe::DuplicateElementException();
+			while (numbers[i] && numbers[i] != ' ')
+				i++;
+		}
 	}
-	// if (tooLong)
-	// 	std::cout << " [...]";
-	std::cout << std::endl;
-	std::cout << std::endl;
-
+	if (set.empty() || set.size() < 2)
+		throw PmergeMe::InvalidArgumentException();
 }
 
 void PmergeMe::fillVector(std::string numbers)
@@ -150,7 +129,7 @@ static void advancePair_Vector(std::vector<int>::iterator &a, std::vector<int>::
 
 static void swapUnsortedPairs_Vector(std::vector<int> &vector, size_t element_size)
 {
-	typedef typename std::vector<int>::iterator Iterator;
+	typedef std::vector<int>::iterator Iterator;
 	size_t number_of_pairs = vector.size() / (element_size * 2);
 
 	Iterator b = vector.begin();
@@ -188,7 +167,7 @@ struct CompareIterators_Vector {
 
 static void recursiveMergeInsertionSort_Vector(std::vector<int> &vector, size_t element_size)
 {
-	typedef typename std::vector<int>::iterator Iterator;
+	typedef std::vector<int>::iterator Iterator;
 	size_t number_of_pairs = vector.size() / (element_size * 2);
 
 	swapUnsortedPairs_Vector(vector, element_size);
@@ -234,7 +213,7 @@ static void recursiveMergeInsertionSort_Vector(std::vector<int> &vector, size_t 
 	size_t bounding_jacobsthal_idx = findBoundingJacobsthalIndex(number_of_pairs);
 	size_t current_jacobsthal_idx = 1;
 	size_t inserted_elements = 1; // B1 counts as inserted
-	// idx starts from 1 to work with jacobsthals, but the indexes to work with the lists start from 0. An offset of -1 is needed.
+	// idx starts from 1 to work with jacobsthals, but the indexes to work with the vectors start from 0. An offset of -1 is needed.
 	for (size_t idx = 1; current_jacobsthal_idx < bounding_jacobsthal_idx; nextIdxInJacobsthalSequence(idx, current_jacobsthal_idx)) {
 		if (idx == 1)
 			continue;
@@ -280,7 +259,7 @@ static void recursiveMergeInsertionSort_Vector(std::vector<int> &vector, size_t 
 		}
 	}
 	
-	// Replace values in the original list. The leftover numbers remain unchanged.
+	// Replace values in the original vector. The leftover numbers remain unchanged.
 	Iterator vector_it = vector.begin();
 	Iterator copy_it = copy_vector.begin();
 	while (copy_it != copy_vector.end())
@@ -303,7 +282,7 @@ static void advancePair_List(std::list<int>::iterator &a, std::list<int>::iterat
 
 static void swapUnsortedPairs_List(std::list<int> &list, size_t element_size)
 {
-	typedef typename std::list<int>::iterator Iterator;
+	typedef std::list<int>::iterator Iterator;
 	size_t number_of_pairs = list.size() / (element_size * 2);
 
 	Iterator b = list.begin();
@@ -341,7 +320,7 @@ struct CompareIterators_List {
 
 static void recursiveMergeInsertionSort_List(std::list<int> &list, size_t element_size)
 {
-	typedef typename std::list<int>::iterator Iterator;
+	typedef std::list<int>::iterator Iterator;
 	size_t number_of_pairs = list.size() / (element_size * 2);
 
 	swapUnsortedPairs_List(list, element_size);
@@ -445,8 +424,6 @@ static void recursiveMergeInsertionSort_List(std::list<int> &list, size_t elemen
 
 void PmergeMe::fillAndSort(std::string numbers)
 {
-	checkDuplicates(numbers);
-
 	clock_t startVector = clock();
 	this->fillVector(numbers);
 	std::vector<int> sortedVector = this->_vector;

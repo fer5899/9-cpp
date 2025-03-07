@@ -30,6 +30,7 @@ class PmergeMe
 		~PmergeMe(void);
 
 		void	checkNumbers(std::string numbers);
+		void	checkDuplicates(std::string numbers);
 		void	fillVector(std::string numbers);
 		void	fillList(std::string numbers);
 		void	fillAndSort(std::string numbers);
